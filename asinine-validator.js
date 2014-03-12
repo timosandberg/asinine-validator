@@ -1,8 +1,9 @@
-/*
- * Bedlamite Validator
+/**
+ * Asinine Validator
  *
  * Super simple regexp validator for super simple needs
  *
+ * @version: 0.1
  * @author: Timo Sandberg <warren@iki.fi>
  *
  */
@@ -26,7 +27,7 @@ var validator = {
             email: this.factory(/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$/, false, false, true, "Enter valid e-mail address"),
             password: this.factory(/^[a-zA-Z0-9_#+\-!%&?]{6,32}$/, 6, 32, true),
             text: this.factory(/^[\s\wäöÄÖÅå%&#]{3,20}$/, 3, 20, true),
-            number: this.factory(/^\d{1,6}$/, 1, 6, true, "Enter an integer")
+            number: this.factory(/^(0|[1-9]\d{0,5})$/, 1, 6, true, "Enter an integer")
         }        
         return validators[validator](value);
     }
