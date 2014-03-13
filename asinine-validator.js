@@ -7,28 +7,42 @@
  * @author: Timo Sandberg <warren@iki.fi>
  *
  */
-var validator = {
-    factory: function (pattern, min, max, required, custom_msg) {
+var Validator = function() {
+	this.validators = {};
+
+	this.init = function() {
+        this.validators = {
+            username: this.factory({ pattern: /^[a-zA-Z0-9_\-]{4,16}$/, min: 4, max: 16, required: true }),
+            email: this.factory({ pattern: /^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$/, required: true, message: "Enter valid e-mail address" }),
+            password: this.factory({ pattern: /^[a-zA-Z0-9_#+\-!%&?]{6,32}$/, min: 6, max: 32, required: true }),
+            text: this.factory({ pattern: /^[\s\wäöÄÖÅå%&#]{3,20}$/, min: 3, max: 20, required: true }),
+            number: this.factory({ pattern: /^(0|[1-9]\d{0,5})$/, min: 1, max: 6, required: true, message: "Enter an integer"})
+        };
+	};
+
+    this.factory = function (opts) {
         return function (tainted) {
-            if (pattern.test(tainted)) {
+            if (opts.pattern.test(tainted)) {
                 return true;
             } else {
-                if (required && tainted.length < 1) return "Required field";
-                else if (min && tainted.length < min) return "Minimum " + min + " characters";
-                else if (max && tainted.length > max) return "Maximum " + max + " characters";
-                else return custom_msg || "Illegal characters";
+                if (opts.required && tainted.length < 1) return "Required field";
+                else if (opts.min && tainted.length < opts.min) return "Minimum " + opts.min + " characters";
+                else if (opts.max && tainted.length > opts.max) return "Maximum " + opts.max + " characters";
+                else return opts.message || "Invalid value";
             }
             return false;
         }
-    },
-    validate: function(validator, value) {
-        validators = {
-            username: this.factory(/^[a-zA-Z0-9_\-]{4,16}$/, 4, 16, true),
-            email: this.factory(/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$/, false, false, true, "Enter valid e-mail address"),
-            password: this.factory(/^[a-zA-Z0-9_#+\-!%&?]{6,32}$/, 6, 32, true),
-            text: this.factory(/^[\s\wäöÄÖÅå%&#]{3,20}$/, 3, 20, true),
-            number: this.factory(/^(0|[1-9]\d{0,5})$/, 1, 6, true, "Enter an integer")
-        }        
-        return validators[validator](value);
-    }
+    };
+    this.validate = function(validator, value) {
+        return this.validators[validator](value);
+    };
+	this.add = function(opts) {
+		if (opts.name && opts.pattern) {
+			this.validators[opts.name] = this.factory(opts);
+			return true;
+		} else {
+			return false;
+		}
+	};
+	this.init();
 };

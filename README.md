@@ -7,7 +7,7 @@ Super simple regexp validator for super simple validation needs. It only validat
 Built-in validators
 -------------------
 
-Some simple regexps to deal with daily needs
+Some simple regexps are provided out-of-the-box to deal with daily needs. See below how to add your own.
 
 * **username**
 	* /^[a-zA-Z0-9_\-]{4,16}$/
@@ -24,8 +24,6 @@ Some simple regexps to deal with daily needs
 	* /^[\s\wäöÄÖÅå%&#]{3,20}$/
 	* 3-20 characters, scands and a couple of special characters (%&#)
 
-These are of course easily configurable in the source
-
 
 Usage
 -----
@@ -36,14 +34,26 @@ Returns either boolean true or an error message. Or false if things have gone to
     // validator.validate(<validator>, <value>)
     
     // real life example (with jquery)
+	var validator = new Validator();
+
     $('input').blur(function() {
         var valid = validator.validate($(this).data('validator'), $(this).val());
         if (valid !== true)
             console.log(valid); // error message
     });
 
+	// add new validator
+	validator.add({
+		name: "european_date",
+		pattern: /^\d{1,2}.\d{1,2}.\d{4}$/,
+		/* optional
+		min: 10,
+		max: 10,
+		message: "Invalid date"
+		*/
+	});
+
 Author
 ------
 
-Timo Sandberg / <warren@iki.fi> / @timo_s4
-
+[Timo Sandberg](mailto:warren@iki.fi) / @timo_s4
