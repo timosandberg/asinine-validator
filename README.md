@@ -47,6 +47,7 @@ Returns either boolean true or an error message. Or false if things have gone to
 		name: "european_date",
 		pattern: /^\d{1,2}.\d{1,2}.\d{4}$/,
 		/* optional
+		required: true,
 		min: 10,
 		max: 10,
 		message: "Invalid date"
