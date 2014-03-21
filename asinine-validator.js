@@ -21,10 +21,13 @@ var Validator = function() {
 	};
 
     this.factory = function (opts) {
+		opts.pattern = (typeof opts.pattern == "string" ? new RegExp(opts.pattern) : opts.pattern);
+
         return function (tainted) {
             if (opts.pattern.test(tainted)) {
                 return true;
             } else {
+				if (!opts.required && tainted.length == 0) return true;
                 if (opts.required && tainted.length < 1) return "Required field";
                 else if (opts.min && tainted.length < opts.min) return "Minimum " + opts.min + " characters";
                 else if (opts.max && tainted.length > opts.max) return "Maximum " + opts.max + " characters";
@@ -34,7 +37,10 @@ var Validator = function() {
         }
     };
     this.validate = function(validator, value) {
-        return this.validators[validator](value);
+		if (this.validators[validator])
+	        return this.validators[validator](value);
+		else
+			return false;
     };
 	this.add = function(opts) {
 		if (opts.name && opts.pattern) {
